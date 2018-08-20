@@ -11,5 +11,5 @@
 - 如果卡片不匹配，两张卡片都继续盖起来。
 - 当所有卡片都正确匹配后，游戏结束。
 
-## how to View the project
-Click on this link to view: https://inmy.love/memory-game/
+## 项目浏览
+点击这个网址: https://inmy.love/memory-game/

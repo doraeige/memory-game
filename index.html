@@ -12,7 +12,7 @@
 
     <div class="container">
         <header>
-            <h1>matching game,have fun!</h1>
+            <h1>matching game, have fun!</h1>
         </header>
 
         <section class="score-panel">
@@ -23,7 +23,8 @@
                 <li><i class="fa fa-star"></i></li>
         	</ul>
 
-        	<span class="moves">3</span> Moves
+            <span class="moves">3</span> Moves
+            <span class="timer">0</span> Seconds
             <div class="restart" id="restart">
         		<i class="fa fa-repeat"></i>
         	</div>
@@ -88,6 +89,10 @@
                     <i class="fa fa-check fa-2x" aria-hidden="true"></i>
                     <h1>Congratualtions you Won!</h1>
                     <p class="step" id="step"></p>
+                    <p class="time">共花费了
+                        <span id="time"></span>秒，获得了                
+                        <span id="star"></span>
+                    </p>
                     <p class="success-sub-msg">太棒了，给自己点个赞</p>
                     <span class="play-again" id="play-again">Play Again</span>
                 </div>

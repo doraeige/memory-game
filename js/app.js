@@ -32,12 +32,18 @@ const count = document.querySelector('.moves');// 查找 moves 的元素
 count.textContent = 0; // 初始化 moves
 let moves = Number(count.textContent); // 强制转换 moves 为数字类型
 const stars = document.querySelector('.stars'); // 查找 stars 的元素
+const times = document.getElementById('time'); // 匹配成功显示页面里的总时间
+let isFirstClick = true; //定义全局变量作为计时器标志
+
+// --Success modal windows-- 
 const step = document.getElementById('step'); // 匹配成功显示页面里的总步数
+let time = document.querySelector('.timer'); // 查找 timer 元素
+let star = document.getElementById('star'); // 查找 star 的元素
 
 // h1 每个首字母大写
-const title = document.querySelector('h1').textContent;
+let title = document.querySelector('h1').textContent;
 function titleCase(str) {
-   return str.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase());
+    return str.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase());
 }
 const t = titleCase(title);
 document.querySelector('h1').textContent = t;
@@ -75,13 +81,13 @@ createHtml(cardIcon);
 
 /*
  * 设置一张卡片的事件监听器。 如果该卡片被点击：
- *  - 显示卡片的符号
- *  - 将卡片添加到状态为 “open” 的 *数组* 中
+ *  - 显示卡片的符号（将这个功能放在你从这个函数中调用的另一个函数中）
+ *  - 将卡片添加到状态为 “open” 的 *数组* 中（将这个功能放在你从这个函数中调用的另一个函数中）
  *  - 如果数组中已有另一张卡，请检查两张卡片是否匹配
- *    + 如果卡片匹配，将卡片锁定为 "open" 状态
- *    + 如果卡片不匹配，将卡片从数组中移除并隐藏卡片的符号
- *    + 增加移动计数器并将其显示在页面上
- *    + 如果所有卡都匹配，则显示带有最终分数的消息
+ *    + 如果卡片匹配，将卡片锁定为 "open" 状态（将这个功能放在你从这个函数中调用的另一个函数中）
+ *    + 如果卡片不匹配，请将卡片从数组中移除并隐藏卡片的符号（将这个功能放在你从这个函数中调用的另一个函数中）
+ *    + 增加移动计数器并将其显示在页面上（将这个功能放在你从这个函数中调用的另一个函数中）
+ *    + 如果所有卡都匹配，则显示带有最终分数的消息（将这个功能放在你从这个函数中调用的另一个函数中）
 */
 
 // 重置,恢复参数默认值
@@ -91,17 +97,35 @@ function reset(){
 
 // 显示卡片并匹配
 function openCard(event){
+    // 点击的元素有可能不是卡片，而有可能是卡片里面的图标;判断点击的是不是卡片
+    if(!event.target.classList.contains('card')){
+        return;
+    }
+
+    // 多于两张打开的卡片后， 就不再显示卡片和匹配检查
+    if (openCards.length >= 2) {
+        return;
+    }
+
+    //判断被点击的卡片是否已经被点开
+    if (event.target.classList.contains('show') || event.target.classList.contains('match')) {
+        console.log('show or match')
+        //如果已经打开或者匹配了, 就中止后续的操作
+        return;
+    }
+
     event.target.classList.add('open', 'show');
     // 查找显示的卡片的图标，将它添加到 open 数组中，以备后续比较卡片所用
     const name = event.target.querySelector('i').classList[1];
     openCards.push(name);
 
+
     // 判断 openCards 里面的两张卡片是否匹配
     let el = document.querySelectorAll('.open'); // 返回 NodeList
     let cardStatu = Array.from(el); // 将 NodeList 装换为数组
 
-    if (cardStatu.length == 2) {
-        if (openCards[0] == openCards[1]) {
+    if (cardStatu.length === 2) {
+        if (openCards[0] === openCards[1]) {
             // 如果卡片相同，则删除'open','show', 添加'match' 状态
             setTimeout(function() {
                cardStatu[0].classList.remove('open', 'show');
@@ -132,17 +156,16 @@ function openCard(event){
         count.textContent = moves;
 
         // 步数 跟 star 的变化
-        if (moves == 15 && num < 8) {
+        if (moves === 15 && num < 8) {
             stars.removeChild(stars.firstElementChild);
-        } else if (moves == 25 && num < 8) {
+        } else if (moves === 25 && num < 8) {
             stars.removeChild(stars.firstElementChild);
-        } else if (moves == 35 && num < 8) {
+        } else if (moves === 35 && num < 8) {
             stars.removeChild(stars.firstElementChild);
-        } else if (num == 8) {
+        } else if (num === 8) {
             // 显示遮罩层并带有最终分数的消息
             showDiv();
-        };
-            
+        };      
     }
 }
 
@@ -153,6 +176,9 @@ function showDiv() {
     const contents = '一共移动了 ';
     const html = contents + moves + ' moves';
     step.insertAdjacentHTML('afterbegin',html);
+    const long = document.querySelector('.timer').innerHTML;
+    times.insertAdjacentHTML('afterbegin', long);
+    star.insertAdjacentHTML('afterbegin', stars.innerHTML);
 }
 
 function hideDiv() {
@@ -161,7 +187,7 @@ function hideDiv() {
     createHtml(cardIcon);
 }
 
-// 给 playAgain 按钮设置点击事件
+// 给playAgain按钮设置点击事件
 const again = document.getElementById('play-again');
 again.addEventListener('click', function () {
     // 隐藏遮罩层
@@ -170,8 +196,23 @@ again.addEventListener('click', function () {
     reset();
 });
 
+let timer;
 //  给卡片的父元素设置点击事件
 cards.addEventListener('click',function(event){
+    if (isFirstClick === true){
+        //设置第一次的标记变量为 false
+        isFirstClick = false;
+        // 启动计时器
+       timer = setInterval(function() {
+            timeType = Number(time.innerHTML) + 1;
+            document.querySelector('.timer').innerHTML = String(timeType);
+        },1000);
+    };
+
+    if(num === 8){
+        clearInterval(timer);
+    };
+
     // 显示卡片并匹配
     openCard(event);
 });

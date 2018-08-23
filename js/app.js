@@ -97,17 +97,19 @@ function reset(){
 
 // 显示卡片并匹配
 function openCard(event){
-    // 点击的元素有可能不是卡片，而有可能是卡片里面的图标;判断点击的是不是卡片
+    // 点击的元素有可能不是卡片，而有可能是卡片里面的图标；判断点击的是不是卡片，
+    // 避免 TypeError:Cannot read property 'classList' of null
     if(!event.target.classList.contains('card')){
         return;
     }
 
-    // 多于两张打开的卡片后， 就不再显示卡片和匹配检查
+    // 多于两张打开的卡片后，就不再显示卡片和匹配检查，避免第三张卡片的尴尬
     if (openCards.length >= 2) {
         return;
     }
 
-    //判断被点击的卡片是否已经被点开
+    //判断被点击的卡片是否已经被点开 
+    // 如果快速点击同一张卡片两次，就会很容易让程序有 Bug 了。这是因为没有防止连续点击同一张卡片的措施导致的。
     if (event.target.classList.contains('show') || event.target.classList.contains('match')) {
         console.log('show or match')
         //如果已经打开或者匹配了, 就中止后续的操作
@@ -208,7 +210,8 @@ cards.addEventListener('click',function(event){
             document.querySelector('.timer').innerHTML = String(timeType);
         },1000);
     };
-
+    
+    // 卡片已经匹配完成，结束计时器
     if(num === 8){
         clearInterval(timer);
     };

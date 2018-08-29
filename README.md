@@ -13,3 +13,15 @@
 
 ## 项目浏览
 点击这个网址: https://inmy.love/memory-game/
+
+## 项目难点
+- 卡片匹配的时候，如果一不小心点成了3个，就没法两两配对了 
+   解决：在 openCard 函数的开始添加判断 openCards.length 代码，多于两张打开的卡片后，就不要再显示卡片和匹配检查了，避免第三张卡片的尴尬
+- 如果快速点击同一张卡片两次，就会很容易让程序有 Bug
+   因为没有防止连续点击同一张卡片的措施导致的。确保每次点击的事件仅对未打开的卡牌有效（排除已经匹配的和已经翻开的牌）
+   解决：在 openCard 函数的开头点击判断卡片状态代码
+- classList 出错
+   用 document.querySelectorAll()方法返回的是 NodeList 出现 TypeError:Cannot read property 'classList' of null
+   解决：用 Array.from() 方法将 NodeList 转为数组
+- 如果页面增加计时器，放在卡片点击事件里，每点击一次都会响应一次，计时器就不是每一秒变化一次了
+   解决：加一个全局变量作为标识，用来判断是否第一次点击卡片，只在第一次的时候启动计时器
